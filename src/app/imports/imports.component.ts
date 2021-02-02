@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { DataService, AlertService } from '../services';
 import { Import, MetaData, GraphModel } from '../models';
-import { IMPORT_COLS } from '../helpers/import.columns';
-
+import { IMPORT_COLS } from '../helpers/import.columns';  
+ 
 @Component({
     selector: 'app-imports',
     templateUrl: './imports.component.html',
     styleUrls: ['./imports.component.scss']
 })
+
 export class ImportsComponent implements OnInit {
   gridApi:any;
   agGrid:any;
@@ -23,7 +24,7 @@ export class ImportsComponent implements OnInit {
 };
  
 colDef = [   
-    {headerName:'Consignee Name', field: 'consignee_Name', sortable: true,  filter: true, },
+    {headerName:'Consignee Name', field: 'consignee_Name', sortable: true, cellRenderer: 'agGroupCellRenderer',  filter: true, },
     {headerName:'Shipper Name', field: 'shipper_Name', sortable: true, filter: true,   },
     {headerName:'Country', "pinned":"left", field: 'country',  headerCheckboxSelection: true,
     headerCheckboxSelectionFilteredOnly: true, checkboxSelection: true, sortable: true, filter: true, },
@@ -42,7 +43,6 @@ autoGroupColumnDef = {
         checkbox: false
     }
 }; 
-  
     importKeys = IMPORT_COLS;
     params: object;
     shipments: Import[];
@@ -53,11 +53,11 @@ autoGroupColumnDef = {
     shipmentFilters = []; 
     checkedItems: any = [];
     pageIndex = 1;
-    pageSize = 20;
+    pageSize = 50;
     viewPort = [1270, 550];
     viewPiePort = [1200, 500];
     formData: any ;
-
+   
     constructor(
         private router: Router,
         private route: ActivatedRoute,
@@ -65,7 +65,7 @@ autoGroupColumnDef = {
         private ds: DataService
     ) {
 
-
+      this.rowSelection = 'multiple';
     
      }
 
@@ -110,38 +110,20 @@ autoGroupColumnDef = {
         );
         return formParams;
     }
-    onChecked(hscode: any, event: any) {
-      let { checked, value } = event.target;
-      if (checked) {
-        this.checkedItems.push(value);
-        this.goToOther()
-        console.log(this.checkedItems)
-      } else {
-        let index = this.checkedItems.indexOf(value);
-        if (index !== -1) this.checkedItems.splice(index, 1);
-        console.log(this.checkedItems)
-      }
-    }
-    goToOther() {      
-      // const searchFormData = this.onSearchSubmit; 
-         // this.router.navigate(["/imports"],
-      //   { 
-      //     relativeTo: this.route, 
-      //     // queryParams: this.getFormParams(FormDat + this.checkedItems)})
-      //     queryParams:   { searchFormData:{fourdigitHs: this.checkedItems.join()}},    
-      //  }) 
-     
-      const searchFormData = this.formData; 
-          this.router.navigate(['/imports'],
-          
-          {  relativeTo:this.route, 
-             queryParams:this.getFormParams(searchFormData) +'&'+  {fourdigitHs: this.checkedItems.join()}})
-           console.log('set'+ searchFormData)
-      }
+    // onChecked(key: any, event: any) {
+    //   let { checked, value } = event.target;
+    //   if (checked) {
+    //     this.checkedItems.push(value);
+       
+    //     console.log(this.checkedItems)
+    //   } else {
+    //     let index = this.checkedItems.indexOf(value);
+    //     if (index !== -1) this.checkedItems.splice(index, 1);
+    //     console.log(this.checkedItems)
+    //   }
+    // }
     
- 
-
-
+    
 
 
 
@@ -359,26 +341,43 @@ autoGroupColumnDef = {
       }
      
   }
-    filterData(key: string, value: any) {
-        // this.params[key] = value;
-        // this.pageIndex = 1;
-        // this.searchData(this.params, true);
+  // onChecked(key: any, event: any) {
+  //   let { checked, value } = event.target;
+  //   if (checked) {
+  //     this.checkedItems.push(value);
+     
+  //     console.log(this.checkedItems)
+  //   } else {
+  //     let index = this.checkedItems.indexOf(value);
+  //     if (index !== -1) this.checkedItems.splice(index, 1);
+  //     console.log(this.checkedItems)
+  //   }
+  // }
+  
+    filterData(key: any, value:any) {
+      // let { checked, value } = event.target;
+      // if (checked) {
+      //   this.checkedItems.push(value);
+      // }
+        this.params[key] = value;
+        this.pageIndex = 1;
+        this.searchData(this.params, true);
         const qParams: object = {};
         qParams[key] = value;
         this.router.navigate([], { queryParams: qParams, queryParamsHandling: 'merge' });
     }
-    goToPage(n: number): void {
-        this.pageIndex = n;
-        this.searchData(this.params);
-    }
-    onNext(): void {
-        this.pageIndex++;
-        this.searchData(this.params);
-    }
-    onPrev(): void {
-        this.pageIndex--;
-        this.searchData(this.params);
-    }
+    // goToPage(n: number): void {
+    //     this.pageIndex = n;
+    //     this.searchData(this.params);
+    // }
+    // onNext(): void {
+    //     this.pageIndex++;
+    //     this.searchData(this.params);
+    // }
+    // onPrev(): void {
+    //     this.pageIndex--;
+    //     this.searchData(this.params);
+    // }
     onResize(event) {
         const width = event.target.innerWidth;
         this.viewPort = [width - 110, 550];

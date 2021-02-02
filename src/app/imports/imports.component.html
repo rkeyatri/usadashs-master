@@ -1,58 +1,81 @@
 <div class="wrapper">
 
-    <div class="col-sm-12 mt-4">
+    <div class="col-sm-12 mt-2">
         <div class="row">
-            <div class="col-md-2">
-                <div class="sidebar">
-                    <div class="card">
-                        <h5 class="card-header bg-dark text-white">Filter</h5>
-                        <h6 class="text-dark"> Hs Code</h6>
-                        <ul class="filter-list">
-                            <li class="filter-item" *ngFor="let hs of shipmentFilters.hsCodeFilters">
-                                <input type="checkbox" [value]="hs.name" (change)="onChecked(hs, $event)">
-                                <a href="javascript:void(0);">{{ hs.name }} ({{ hs.total }})</a></li>
+            <div class="col col-2-5">
+                <div class="card">
+                    <h5 class="card-header">Filter</h5>
+                    <div class="filter card" *ngFor="let filter of shipmentFilters | keyvalue">
+                        <h6 class="filter-title capitalize"><strong>    {{ filter.key }}</strong></h6>
+                        <ul class="filter-list" *ngFor="let item of filter.value">
+                            <li class="filter-item">
+                                <a href="javascript:void(0);">
+                                    <input type="checkbox" [value]="filter.key" (change)="filterData(filter.key, item.name, $event.target.checked)"> {{ item.name }} ({{ item.total }})</a>
+                            </li>
                         </ul>
-
-                        <h6 class="text-dark"> Country</h6>
-                        <ul class="filter-list">
-                            <li class="filter-item" *ngFor="let country of shipmentFilters.countryFilters">
-                                <input type="checkbox" [value]="country.name" (change)="onChecked(country, $event)">
-                                <a href="javascript:void(0);">{{ country.name }} ({{ country.total }})</a></li>
-
-                        </ul>
-
-                        <h6 class="text-dark"> Port</h6>
-                        <ul class="filter-list">
-                            <li class="filter-item" *ngFor="let port of shipmentFilters.portFilters">
-                                <input type="checkbox" [value]="port.name" (change)="onChecked(port, $event)">
-                                <a href="javascript:void(0);">{{ port.name }} ({{ port.total }})</a></li>
-
-                        </ul>
-
-                        <h6 class="text-dark"> Unit</h6>
-                        <ul class="filter-list">
-                            <li class="filter-item" *ngFor="let unit of shipmentFilters.unitFilters">
-                                <input type="checkbox" [value]="unit.name" (change)="onChecked(unit, $event)">
-                                <a href="javascript:void(0);">{{ unit.name }} ({{ unit.total }})</a></li>
-
-                        </ul>
-
                     </div>
                 </div>
             </div>
+
             <div class="col-sm-10">
                 <div class="card">
-                    <div class="col-md-12">
-                        <app-search-box (searchSubmit)="onSearchSubmit($event)"></app-search-box>
-                    </div>
+                    <app-search-box (searchSubmit)="onSearchSubmit($event)"></app-search-box>
                 </div>
-                <p class="text-dark">
-                    {{meta.total}}
-                </p>
+                <div class="card mt-4">
+                    <as-tabs (switchTab)="onSwitchTab($event)">
+                        <as-tab [for]="'Shipments'" [title]="'Shipments'">
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="text-dark">
+                                        <span>Total Shipment</span>: <b>{{meta.total}}</b>
+                                    </p>
+                                    <ag-grid-angular id="myGrid" style="width:100%; height:500px;" class="ag-theme-alpine" [defaultColDef]="defaultColDef" [rowSelection]="rowSelection" [defaultColDef]="defaultColDef" [rowData]="rowData" [columnDefs]="colDef" [pagination]="true" [sideBar]="true"
+                                        [paginationPageSize]="30" [suppressContextMenu]="true" [autoGroupColumnDef]="autoGroupColumnDef" [animateRows]="true">
+                                    </ag-grid-angular>
 
-                <ag-grid-angular id="myGrid" style="width:100%; height:500px;" class="ag-theme-alpine" [defaultColDef]="defaultColDef" [rowSelection]="rowSelection" [defaultColDef]="defaultColDef" [rowData]="rowData" [columnDefs]="colDef" [pagination]="true" [sideBar]="true"
-                    [paginationPageSize]="30" [suppressContextMenu]="true" [autoGroupColumnDef]="autoGroupColumnDef" [animateRows]="true">
-                </ag-grid-angular>
+                                </div>
+                            </div>
+                        </as-tab>
+                        <as-tab [for]="'Dashboard'" [title]="'Dashboard'">
+                            <div class="card">Dashboard
+                                <div class="card-body">
+                                </div>
+                            </div>
+                        </as-tab>
+                        <as-tab [for]="'Importer Analysis'" [title]="'Importer Analysis'">
+                            <div class="card">Importer Analysi
+                                <div class="card-body">
+                                </div>
+                            </div>
+                        </as-tab>
+                        <as-tab [for]="'Exporter Analysis'" [title]="'Exporter Analysis'">
+                            <div class="card">Exporter Analysis
+                                <div class="card-body">
+                                </div>
+                            </div>
+                        </as-tab>
+                        <as-tab [for]="'Comparison'" [title]="'Comparison'">
+                            <div class="card">Comparison
+                                <div class="card-body">
+                                </div>
+                            </div>
+                        </as-tab>
+                        <as-tab [for]="'Importer & Exporter Analysis'" [title]="'Importer & Exporter Analysis'">
+                            <div class="card">Importer & Exporter Analysis
+                                <div class="card-body">
+                                </div>
+                            </div>
+                        </as-tab>
+                        <as-tab [for]="'Analysis Report'" [title]="'Analysis Report'">
+                            <div class="card">
+                                Analysis Report
+                                <div class="card-body">
+                                </div>
+                            </div>
+                        </as-tab>
+                    </as-tabs>
+
+                </div>
             </div>
         </div>
     </div>

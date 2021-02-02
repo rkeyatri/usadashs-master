@@ -12,7 +12,7 @@ import { MainComponent } from './layouts/main/main.component';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './layouts/header/header.component';
 import { ImportsComponent } from './imports/imports.component'; 
-import { AgGridModule } from 'ag-grid-angular';
+import { AgGridModule } from 'ag-grid-angular'; 
 
 @NgModule({
     declarations: [
