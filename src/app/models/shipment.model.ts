@@ -1,7 +1,6 @@
 export interface Shipments {
-    imports: [];
-    exports: [];
+    imports: []; 
     total: Number;
-    pageindex: string;
-    pagesize: string;
+    pageIndex: number;
+    pageSize: number;
 }

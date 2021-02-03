@@ -1,12 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map } from 'rxjs/operators'; 
 
 import { DataService, AlertService } from '../services';
 import { Import, MetaData, GraphModel } from '../models';
-import { IMPORT_COLS } from '../helpers/import.columns';  
- 
+import { IMPORT_COLS } from '../helpers/import.columns';    
+
+
+
+
+
+
+
 @Component({
     selector: 'app-imports',
     templateUrl: './imports.component.html',
@@ -18,22 +24,10 @@ export class ImportsComponent implements OnInit {
   agGrid:any;
   columnApi:any;  
   rowSelection:any; 
-  defaultColDef = {
-    sortable: true,
-    filter: true    
-};
- 
-colDef = [   
-    {headerName:'Consignee Name', field: 'consignee_Name', sortable: true, cellRenderer: 'agGroupCellRenderer',  filter: true, },
-    {headerName:'Shipper Name', field: 'shipper_Name', sortable: true, filter: true,   },
-    {headerName:'Country', "pinned":"left", field: 'country',  headerCheckboxSelection: true,
-    headerCheckboxSelectionFilteredOnly: true, checkboxSelection: true, sortable: true, filter: true, },
-    {headerName:'Hs Code', field: 'hS_Code' ,sortable: true, filter: true,   },
-    {headerName:'Loading Port', field: 'loading_Port' ,sortable: true, filter: true,   },     
-    {headerName:'Unloading Port', field: 'unloading_Port',sortable: true, filter: true,    }, 
-    {headerName:'Product Description', field: 'product_Description', sortable: true, filter: true,  }, 
-    {headerName:'Date', field: 'date', sortable: true, filter: true,  sideBar:true },   
-];
+  public colDef; 
+  public defaultColDef;
+  private pivotPanelShow; 
+  private rowGroupPanelShow;
 
 autoGroupColumnDef = {
     headerName: 'Country',
@@ -57,18 +51,72 @@ autoGroupColumnDef = {
     viewPort = [1270, 550];
     viewPiePort = [1200, 500];
     formData: any ;
-   
+   sideBar = {
+    toolPanels: [
+        {
+            id: 'columns',
+            labelDefault: 'Columns',
+            labelKey: 'columns',
+            iconKey: 'columns',
+            toolPanel: 'agColumnsToolPanel',
+        },
+        {
+            id: 'filters',
+            labelDefault: 'Filters',
+            labelKey: 'filters',
+            iconKey: 'filter',
+            toolPanel: 'agFiltersToolPanel',
+        }
+    ],
+    position: 'left',
+    defaultToolPanel: 'filters'
+}
     constructor(
         private router: Router,
         private route: ActivatedRoute,
         private alertService: AlertService,
         private ds: DataService
     ) {
-
-      this.rowSelection = 'multiple';
+      this.colDef = [   
+        {headerName:'Consignee Name', field: 'consignee_Name'},
+        {headerName:'Shipper Name', field: 'shipper_Name', sortable: true, filter: true,   },
+        {headerName:'Country', "pinned":"left", field: 'country', headerCheckboxSelection: true,
+        headerCheckboxSelectionFilteredOnly: true, checkboxSelection: true, sortable: true, filter: true,},
+        {headerName:'Hs Code', field: 'hS_Code' ,sortable: true, filter: true,   },
+        {headerName:'Loading Port', field: 'loading_Port' ,sortable: true, filter: true,   },     
+        {headerName:'Unloading Port', field: 'unloading_Port',sortable: true, filter: true,    }, 
+        {headerName:'Product Description', field: 'product_Description', sortable: true, filter: true,  }, 
+        {headerName:'Date', field: 'date', sortable: true, filter: true,  sideBar:true },   
+    ];
     
-     }
-
+      this.rowSelection = 'multiple';
+     
+      this.defaultColDef = {
+        editable: true,
+        enableRowGroup: true,
+        enablePivot: true,
+        enableValue: true,
+        sortable: true,
+        resizable: true,
+        filter: true,
+        flex: 1,
+        minWidth: 100,
+      };
+      this.rowSelection = 'multiple';
+      this.rowGroupPanelShow = 'always';
+      this.pivotPanelShow = 'always';
+    }
+    //   var checkboxSelection = function (params) {
+    //     return params.columnApi.getRowGroupColumns().length === 0;
+    //   };
+    //   var headerCheckboxSelection = function (params) {
+    //     return params.columnApi.getRowGroupColumns().length === 0;
+    //   };
+    //  }
+     onGridReady(params) {
+      this.gridApi = params.api;
+  }
+  
     ngOnInit() {
         const urlParams = combineLatest(
             this.route.params,
@@ -82,7 +130,7 @@ autoGroupColumnDef = {
                 this.searchData(this.params, true);            
         });
     }
-    
+ 
      
     onSearchSubmit(form: any){
       const searchFormData = form.value; 
@@ -155,19 +203,19 @@ autoGroupColumnDef = {
 
 
     onSwitchTab(tab: any) {
-        if (tab.for === 'charts') {
-            this.ds.getImportCharts(this.params)
-            .pipe(
-                map(
-                    data =>  data[0]
-                )
-            )
-            .subscribe(
-                (data) => {
-                    this.graphdata = data;
-                }
-            );
-        }
+        // if (tab.for === 'charts') {
+        //     this.ds.getImportCharts(this.params)
+        //     .pipe(
+        //         map(
+        //             data =>  data[0]
+        //         )
+        //     )
+        //     .subscribe(
+        //         (data) => {
+        //             this.graphdata = data;
+        //         }
+        //     );
+        // }
         if(tab.for === 'comparision'){
             /*
             this.compaeData = [
@@ -298,12 +346,12 @@ autoGroupColumnDef = {
                 }
               ];
               */
-            this.ds.getImportComparision(this.params)
-            .subscribe(
-                (data) => {
-                    this.compaeData = data;
-                }
-            );
+            // this.ds.getImportComparision(this.params)
+            // .subscribe(
+            //     (data) => {
+            //         this.compaeData = data;
+            //     }
+            // );
         }
     }
     searchData(params: object, updateFilter?: boolean) {
@@ -313,8 +361,7 @@ autoGroupColumnDef = {
           .subscribe(
               ({ imports, meta }) => {
                   console.log(imports)
-                  if (imports != null) {
-                      this.shipments = imports;
+                  if (imports != null) { 
                        this.rowData=imports; 
                       this.meta = meta;
                        console.log(this.meta)
@@ -366,89 +413,22 @@ autoGroupColumnDef = {
         qParams[key] = value;
         this.router.navigate([], { queryParams: qParams, queryParamsHandling: 'merge' });
     }
-    // goToPage(n: number): void {
-    //     this.pageIndex = n;
-    //     this.searchData(this.params);
-    // }
-    // onNext(): void {
-    //     this.pageIndex++;
-    //     this.searchData(this.params);
-    // }
-    // onPrev(): void {
-    //     this.pageIndex--;
-    //     this.searchData(this.params);
-    // }
+    goToPage(n: number): void {
+        this.pageIndex = n;
+        this.searchData(this.params);
+    }
+    onNext(): void {
+        this.pageIndex++;
+        this.searchData(this.params);
+    }
+    onPrev(): void {
+        this.pageIndex--;
+        this.searchData(this.params);
+    }
     onResize(event) {
         const width = event.target.innerWidth;
         this.viewPort = [width - 110, 550];
         this.viewPiePort = [width - 120, 550];
     }
 }
-export var multi = [
-  {
-    "name": "Germany",
-    "series": [
-      {
-        "name": "1990",
-        "value": 62000000
-      },
-      {
-        "name": "2010",
-        "value": 73000000
-      },
-      {
-        "name": "2011",
-        "value": 89400000
-      }
-    ]
-  },
-
-  {
-    "name": "USA",
-    "series": [
-      {
-        "name": "1990",
-        "value": 250000000
-      },
-      {
-        "name": "2010",
-        "value": 309000000
-      },
-      {
-        "name": "2011",
-        "value": 311000000
-      }
-    ]
-  },
-
-  {
-    "name": "France",
-    "series": [
-      {
-        "name": "1990",
-        "value": 58000000
-      },
-      {
-        "name": "2010",
-        "value": 50000020
-      },
-      {
-        "name": "2011",
-        "value": 58000000
-      }
-    ]
-  },
-  {
-    "name": "UK",
-    "series": [
-      {
-        "name": "1990",
-        "value": 57000000
-      },
-      {
-        "name": "2010",
-        "value": 62000000
-      }
-    ]
-  }
-];
+ 

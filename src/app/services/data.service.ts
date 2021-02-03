@@ -22,27 +22,36 @@ export class DataService {
         )
         return formParams;
     }
-    getGraphicalData(params: any): Observable<GraphModel> {
-        return this.api.get('import/Getgraph', this.sanitizedParams(params));
-    }
-    getImportCharts(params: any): Observable<GraphModel> {
-        return this.api.get('import/Getgraph', this.sanitizedParams(params));
-    }
-    getImportComparision(params: any): Observable<[]> {
-        return this.api.get('import/GetCompare', this.sanitizedParams(params));
-    }
+  
+    // getImportData(params: object): Observable<{imports: Import[], meta: MetaData}> {
+    //     return this.api.get('USA/GetUsadata', this.sanitizedParams(params)).pipe(map(
+    //         data => {
+    //             return {
+    //                 imports: data.usaImportMasters,
+    //                 meta: {
+    //                     total: data.totalCount,
+    //                      pageIndex: data.pageIndex,
+    //                      pageSize: data.pageSize
+    //                 }
+    //             };
+    //         }
+    //     ));
+    // }
     getImportData(params: object): Observable<{imports: Import[], meta: MetaData}> {
         return this.api.get('USA/GetUsadata', this.sanitizedParams(params)).pipe(map(
             data => {
                 return {
                     imports: data.usaImportMasters,
                     meta: {
-                        total: data.totalCount,
-                        pageIndex: data.pageIndex,
-                        pageSize: data.pageSize
-                    }
+                    total: data.totalCount,
+                        pageIndex: data.pageIndex,                        
+                        pageSize: data.pageSize 
+                    },
+                     
                 };
+               
             }
+            
         ));
     }
     getImportFilters(params: object) {

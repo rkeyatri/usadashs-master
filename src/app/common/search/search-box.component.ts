@@ -33,7 +33,8 @@ export class SearchBoxComponent implements OnInit {
             country: '',
             exporter: '',
             importer: '',
-            unit: '',  
+            unit: '', 
+          
         });
 
         const urlParams = combineLatest(
