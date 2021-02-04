@@ -141,13 +141,13 @@ input[type='submit'] {
     &.button-clear {
         background-color: transparent;
         border-color: transparent;
-        color: $color-primary;
+        color: $color-secondary;
         &:focus,
         &:hover,
         &.active {
             background-color: transparent;
             border-color: transparent;
-            color: $color-secondary;
+            color: $color-primary;
         }
         &[disabled] {
             &:focus,

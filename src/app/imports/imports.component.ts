@@ -9,6 +9,26 @@ import { IMPORT_COLS } from '../helpers/import.columns';
 
 
 
+import {
+  ChartComponent,
+  ApexAxisChartSeries,
+  ApexChart,
+  ApexXAxis,
+  ApexDataLabels,
+  ApexTitleSubtitle,
+  ApexStroke,
+  ApexGrid
+} from "ng-apexcharts";
+
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  dataLabels: ApexDataLabels;
+  grid: ApexGrid;
+  stroke: ApexStroke;
+  title: ApexTitleSubtitle;
+};
 
 
 
@@ -20,6 +40,8 @@ import { IMPORT_COLS } from '../helpers/import.columns';
 })
 
 export class ImportsComponent implements OnInit {
+ 
+
   gridApi:any;
   agGrid:any;
   columnApi:any;  
@@ -43,11 +65,13 @@ autoGroupColumnDef = {
     rowData:Import[];
     meta: MetaData;
     graphdata: GraphModel;
+    GraphModel:any
     compaeData: [];
     shipmentFilters = []; 
     checkedItems: any = [];
+    coun:GraphModel[];
     pageIndex = 1;
-    pageSize = 50;
+    pageSize = 50; 
     viewPort = [1270, 550];
     viewPiePort = [1200, 500];
     formData: any ;
@@ -71,22 +95,29 @@ autoGroupColumnDef = {
     position: 'left',
     defaultToolPanel: 'filters'
 }
-    constructor(
+  chartOptions;    constructor(
         private router: Router,
         private route: ActivatedRoute,
         private alertService: AlertService,
         private ds: DataService
     ) {
       this.colDef = [   
+        {headerName:'Date', field: 'date', sortable: true, filter: true, headerCheckboxSelection: true,
+        headerCheckboxSelectionFilteredOnly: true, checkboxSelection: true,  },   
         {headerName:'Consignee Name', field: 'consignee_Name'},
         {headerName:'Shipper Name', field: 'shipper_Name', sortable: true, filter: true,   },
-        {headerName:'Country', "pinned":"left", field: 'country', headerCheckboxSelection: true,
-        headerCheckboxSelectionFilteredOnly: true, checkboxSelection: true, sortable: true, filter: true,},
         {headerName:'Hs Code', field: 'hS_Code' ,sortable: true, filter: true,   },
-        {headerName:'Loading Port', field: 'loading_Port' ,sortable: true, filter: true,   },     
-        {headerName:'Unloading Port', field: 'unloading_Port',sortable: true, filter: true,    }, 
+        
         {headerName:'Product Description', field: 'product_Description', sortable: true, filter: true,  }, 
-        {headerName:'Date', field: 'date', sortable: true, filter: true,  sideBar:true },   
+        {headerName:'Weight In Kg', field: 'weight_in_KG' ,sortable: true, filter: true,   }, 
+        {headerName:'Quantity', field: 'quantity' ,sortable: true, filter: true,   }, 
+        {headerName:'Unit', field: 'quantity_Unit' ,sortable: true, filter: true,   },
+        {headerName:'Cif', field: 'cif' ,sortable: true, filter: true,   }, 
+        {headerName:'Country', field: 'country', sortable: true, filter: true,},
+        {headerName:'Loading Port', field: 'loading_Port' ,sortable: true, filter: true,},     
+        {headerName:'Unloading Port', field: 'unloading_Port',sortable: true, filter: true, }
+      
+       
     ];
     
       this.rowSelection = 'multiple';
@@ -105,7 +136,59 @@ autoGroupColumnDef = {
       this.rowSelection = 'multiple';
       this.rowGroupPanelShow = 'always';
       this.pivotPanelShow = 'always';
+
+
+      this.chartOptions = {
+        series: [
+          {
+            name: "Desktops",
+            data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+          }
+        ],
+        chart: {
+          height: 350,
+          type: "bar",
+          zoom: {
+            enabled: false
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: "straight"
+        },
+        title: {
+          text: "Jan",
+          align: "left"
+        },
+        grid: {
+          row: {
+            colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+            opacity: 0.5
+          }
+        },
+        xaxis: {
+          categories: [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep"
+          ]
+        }
+      };
+    
+  
+  
     }
+
+   
+    
     //   var checkboxSelection = function (params) {
     //     return params.columnApi.getRowGroupColumns().length === 0;
     //   };
@@ -113,9 +196,7 @@ autoGroupColumnDef = {
     //     return params.columnApi.getRowGroupColumns().length === 0;
     //   };
     //  }
-     onGridReady(params) {
-      this.gridApi = params.api;
-  }
+ 
   
     ngOnInit() {
         const urlParams = combineLatest(
@@ -131,10 +212,19 @@ autoGroupColumnDef = {
         });
     }
  
-     
+    getGraph(params:object){
+      this.ds.getGraph(params)
+      .pipe(map(data=>data))
+      .subscribe(
+        data =>{
+         this.GraphModel=data;
+          this.coun= data.countryGraphas 
+        }
+      )
+    }
     onSearchSubmit(form: any){
       const searchFormData = form.value; 
-     this.formData.push(this.searchData)
+    
       console.log(this.formData)
       if(searchFormData.mode === 'imports') {
           this.router.navigate(['/imports'], { queryParams: this.getFormParams(searchFormData)});

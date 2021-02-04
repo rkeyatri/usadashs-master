@@ -1,6 +1,6 @@
 export interface GraphModel {
-    portwisegraph: any;
-    countrywisegraph: any;
-    importerwisegraph: any;
-    exporterwisegraph: any;
+    consigneeGraphas: any;
+    countryGraphas: any;
+    fourDigitHsGraphas: any;
+    hscodeGraphas: any;
 }

@@ -13,7 +13,10 @@ import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './layouts/header/header.component';
 import { ImportsComponent } from './imports/imports.component';  
 import { AgGridModule } from 'ag-grid-angular'; 
-import   'ag-grid-enterprise'; 
+import   'ag-grid-enterprise';
+ import { NgApexchartsModule } from 'ng-apexcharts';
+ 
+//import { AgGridModule } from 'ag-grid-community/angular';
 @NgModule({
     declarations: [
         AppComponent,
@@ -23,13 +26,17 @@ import   'ag-grid-enterprise';
         DashboardComponent,
         HeaderComponent,
         ImportsComponent, 
+
     ],
+  
+      
     imports: [
         CoreModule,  
         BrowserAnimationsModule,
         BrowserModule,
         AppRoutingModule, 
         NgxChartsModule, 
+         NgApexchartsModule,
         AgGridModule.withComponents([ImportsComponent])
     ],
     providers: [

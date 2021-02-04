@@ -4,15 +4,21 @@
     padding: 4px 0px;
     .numbers {
         display: flex;
+        .page-counts {
+            padding-right: 10px;
+        }
     }
     .description {
         padding: 0px 4px;
+        margin-right: 8px;
     }
     button.min,
     .button.min {
-        height: 18px;
+        height: 28px;
         line-height: 28px;
         padding: 0px 9px;
+        background: #ffb01b;
+        color: #ffffff;
         margin: 0 1px;
         font-family: Arial, Helvetica, sans-serif;
         font-size: 12px;
@@ -20,5 +26,30 @@
             outline: none;
             outline: none;
         }
+        &:active {
+            background: #f3d49a !important;
+            color: #000000 !important;
+            outline: none;
+            outline: none;
+        }
     }
+}
+
+.button.button-clear:focus,
+.button.button-clear:hover,
+.button.button-clear.active,
+button.button-clear:focus,
+button.button-clear:hover,
+button.button-clear.active,
+input[type=button].button-clear:focus,
+input[type=button].button-clear:hover,
+input[type=button].button-clear.active,
+input[type=reset].button-clear:focus,
+input[type=reset].button-clear:hover,
+input[type=reset].button-clear.active,
+input[type=submit].button-clear:focus,
+input[type=submit].button-clear:hover,
+input[type=submit].button-clear.active {
+    background: #000000 !important;
+    color: #f3d49a !important;
 }
